@@ -1,8 +1,10 @@
 #-*- coding:utf-8 -*-
-from urllib import request
+from urllib import request,parse
 import re
+import time
 
-def getLink(relurl,refurl):
+# 获取所有下载链接
+def getDLink(relurl,refurl):
     host = 'http://www.5tps.com'
     opener = request.build_opener()
     # 加Referer头请求
@@ -20,6 +22,7 @@ def getLink(relurl,refurl):
     targetUrl = pre + '?' + nums[0] + 'x' + nums[1] + 'x' + nums[2] + '-' + nums[3] + '?2'
     return targetUrl 
 
+# 获取iframe的链接
 def getIframe(relurl):
     host = 'http://www.5tps.com'
     html = getHtml(host + relurl).decode('gbk')
@@ -50,7 +53,7 @@ def getHtml(url):
     return html
 
 # 用urllib获取html代码
-html = getHtml("http://www.5tps.com/html/83.html").decode('gb2312')
+html = getHtml("http://www.5tps.com/html/20518.html").decode('gb2312')
 
 # 获取作者和标题
 (author,title) = getAuthorAndTitle(html)
@@ -60,10 +63,19 @@ links = getAllLinks(html)
 linksNum = len(links)
 
 i = 0 
-# 循环获取下载链接
+# 循环所有页面
 for link in links:
+    # 获取下载链接
     iframeLink = getIframe(link)
-    dLink = getLink(iframeLink,link)
-    i = i+1
-    print(i)
+    dLink = getDLink(iframeLink,link)
     print(dLink)
+    # 下载
+    i = i+1
+    print(author,title)
+    print("正在下载第%d集" % i)
+    f = request.urlopen(parse.quote(dLink).replace('%3A',':').replace('%3F','?'))
+    data = f.read()
+    with open("c:/MyFolds/temp/%d.mp3" % i,"wb") as code:
+        code.write(data)
+    # 停止5秒，减轻爬取网站负担
+    time.sleep(5)

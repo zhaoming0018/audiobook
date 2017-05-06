@@ -1,13 +1,19 @@
 #-*- coding:utf-8 -*-
-from urllib import request
+from urllib import request,parse
 
-st = 'http://www.5tps.com/down/83_47_1_78.html'
+def Schedule(a,b,c):
+    '''''
+    a:已经下载的数据块
+    b:数据块的大小
+    c:远程文件的大小
+   '''
+    per = 100.0 * a * b / c
+    if per > 100 :
+        per = 100
+    print('%.2f%%' % per)
 
-url = 'http://www.5tps.com/play/flv_down.asp?urlid=%B5%A5%CC%EF%B7%BC%2F2009%2F%C0%CF%B5%EA%B7%E7%D4%C6%2F%C0%CF%B5%EA%B7%E7%D4%C6%5F078%2Emp3&title=%C0%CF%B5%EA%B7%E7%D4%C6&ji=78&id=83&said=47'
-
-opener = request.build_opener()
-opener.addheaders = [('Referer',st)]
-page = opener.open(url)
-
-html = page.read() 
-print(html.decode('gb2312'))
+st = 'http://163l-d.ysts8.com:8000/刑侦反腐/血月迷局/第01章_引子.mp3?10103754310008x1494084995x10104084922762-059500737469129169?2'
+#st = 'http://dxpse-d.ysts8.com:8000/%E5%8D%95%E7%94%B0%E8%8A%B3/2009/%E8%80%81%E5%BA%97%E9%A3%8E%E4%BA%91/%E8%80%81%E5%BA%97%E9%A3%8E%E4%BA%91_001.mp3?10103754302759x1494081716x10104216915513-961340'
+st = parse.quote(st).replace('%3A',':').replace('%3F','?')
+print(st)
+request.urlretrieve(st,'c:/MyFolds/temp/1.mp3',Schedule)
